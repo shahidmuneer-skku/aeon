@@ -104,25 +104,22 @@ def create_dataloader(train_dataset, train_batch_size=1):
     return torch.utils.data.DataLoader(train_dataset, batch_size=train_batch_size, shuffle=True)
 
 class DeepHashNet(nn.Module):
-    def __init__(self, hash_dim=128):
+   
+    def __init__(self):
         super().__init__()
-        self.flatten_dim = 4 * 64 * 64  # Flattened input size
+        self.flatten_dim = 4 * 64 * 64            # =16 384
+        self.hash_layer  = nn.Linear(self.flatten_dim, self.flatten_dim)
 
-        # Hash projection layer (input → hash representation)
-        self.hash_layer = nn.Linear(self.flatten_dim, self.flatten_dim)
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        B = x.size(0)
+        x_flat = x.view(B, -1)                    # 1. Flatten
 
-    
-    def forward(self, x):
-        batch_size = x.shape[0]
+        z = torch.tanh(self.hash_layer(x_flat))   # 2. Forward pass → Z
 
-        # Flatten input from (B, 4, 64, 64) → (B, 4*64*64)
-        x_flattened = x.view(batch_size, -1)
-
-        # Compute deep hash representation
-        hash_code = self.hash_layer(x_flattened)  # Shape: [B, hash_dim]
-        hash_code = torch.sigmoid(hash_code)  # Normalize to [0,1]
-
-        reconstructed = hash_code.view(batch_size, 4, 64, 64)  # Reshape to (B, 4, 64, 64)
+        # 3. Straight‑through estimator  H ← sign(Z) + (Z – stop‑grad(Z))
+        hash_code = (z.sign() - z).detach() + z           # forward = sign(z), grad = 1
+        
+        reconstructed = hash_code.view(B, 4, 64, 64)  # Reshape to (B, 4, 64, 64)
 
         return reconstructed
     
