@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=2 python inject_adaptive_latent_wm_input_image.py --run_name all_attack --w_channel 3 --start 0 --end 17 --wm_path ckpts_adaptive --reference_model ViT-H-14 --w_pattern adaptive --model_id stabilityai/stable-diffusion-2-1-base --wm_path /media/NAS/USERS/shahid////ckpts_adaptive_reconstruction_hashing/optimized_wm5-30_embedding-step-2000.pt

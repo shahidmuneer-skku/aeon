@@ -1,0 +1,1 @@
+python inference.py --prompt "A beautiful Painting" --w_pattern ring  --wm_path /////ckpts/optimized_wm5-30_embedding-step-2000.pt  --model_id stabilityai/stable-diffusion-2-1-base --wm_path /////ckpts/optimized_wm5-30_embedding-step-2000.pt 

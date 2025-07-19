@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=1 python gen_watermark.py --run_name no_attack --w_channel 3 --w_pattern adaptive --model_id stabilityai/stable-diffusion-2-1-base 
